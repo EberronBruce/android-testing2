@@ -3,6 +3,8 @@ package com.example.android.architecture.blueprints.todoapp.tasks
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.android.architecture.blueprints.todoapp.data.Task
+import com.example.android.architecture.blueprints.todoapp.data.source.FakeTestRepository
 import com.example.android.architecture.blueprints.todoapp.getOrAwaitValue
 import org.junit.Assert.*
 import org.junit.Before
@@ -12,9 +14,11 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 
-@RunWith(AndroidJUnit4::class)
-@Config(manifest = Config.NONE)
+
+
 class TasksViewModelTest {
+
+	private lateinit var tasksRepository: FakeTestRepository
 
 	// Subject under test
 	private lateinit var tasksViewModel: TasksViewModel
@@ -25,7 +29,14 @@ class TasksViewModelTest {
 	// Subject under test private lateinit var tasksViewModel: TasksViewModel
 	@Before
 	fun setupViewModel() {
-		tasksViewModel = TasksViewModel(ApplicationProvider.getApplicationContext())
+		//We initialise the tasks to 3, with one active and two completed
+		tasksRepository = FakeTestRepository()
+		val task1 = Task("Title1", "Description1")
+		val task2 = Task("Title2", "Description2")
+		val task3 = Task("Title3", "Description3")
+		tasksRepository.addTasks(task1, task2, task3)
+
+		tasksViewModel = TasksViewModel(tasksRepository)
 	}
 
 	@Test
